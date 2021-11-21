@@ -35,7 +35,7 @@
 
 #include "ESP32MotorControl.h"
 
-#include <stdio.h>
+#include <cmath>
 
 #include "Arduino.h"
 #include "driver/mcpwm.h"
@@ -106,7 +106,7 @@ void ESP32MotorControl::attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t g
 	mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, gpioIn2);
 
 	// Indicate the motor 0 is attached.
-	this->mMotorAttached[0] = true;
+	this->mMotorAttached_[0] = true;
 
 	if (!(gpioIn3 == 0 && gpioIn4 == 0)) {
 		// Attach motor 1 input pins.
@@ -114,7 +114,7 @@ void ESP32MotorControl::attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t g
 		mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM1B, gpioIn4);
 
 		// Indicate the motor 1 is attached.
-		this->mMotorAttached[1] = true;
+		this->mMotorAttached_[1] = true;
 	}
 
 	// Initial MCPWM configuration
@@ -132,69 +132,31 @@ void ESP32MotorControl::attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t g
 	mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_1, &cfg);
 }
 
-void ESP32MotorControl::motorForward(uint8_t motor, uint8_t speed)
-{
-	if (!isMotorValid(motor) || speed > 100)
-		return;
+void ESP32MotorControl::motorForward(uint8_t motor, uint8_t speed) { setMotor_(motor, speed); }
 
-	setMotorPWM(motor, speed);
+void ESP32MotorControl::motorReverse(uint8_t motor, uint8_t speed) { setMotor_(motor, -speed); }
 
-	mMotorSpeed[motor] = speed;
-	mMotorForward[motor] = true;
-}
+void ESP32MotorControl::motorFullForward(uint8_t motor) { setMotor_(motor, 100); }
 
-void ESP32MotorControl::motorReverse(uint8_t motor, uint8_t speed)
-{
-	if (!isMotorValid(motor) || speed > 100)
-		return;
+void ESP32MotorControl::motorFullReverse(uint8_t motor) { setMotor_(motor, -100); }
 
-	setMotorPWM(motor, -speed);
-
-	mMotorSpeed[motor] = speed;
-	mMotorForward[motor] = false;
-}
-
-void ESP32MotorControl::motorFullForward(uint8_t motor)
-{
-	if (!isMotorValid(motor))
-		return;
-
-	setMotorNoPWM(motor, 1);
-
-	mMotorSpeed[motor] = 100;
-	mMotorForward[motor] = true;
-}
-
-void ESP32MotorControl::motorFullReverse(uint8_t motor)
-{
-	if (!isMotorValid(motor))
-		return;
-
-	setMotorNoPWM(motor, -1);
-
-	mMotorSpeed[motor] = 100;
-	mMotorForward[motor] = false;
-}
-
-void ESP32MotorControl::motorStop(uint8_t motor)
-{
-	if (!isMotorValid(motor))
-		return;
-
-	setMotorNoPWM(motor, 0);
-
-	mMotorSpeed[motor] = 0;
-}
+void ESP32MotorControl::motorStop(uint8_t motor) { setMotor_(motor, 0); }
 
 void ESP32MotorControl::motorsStop()
 {
-	motorStop(0);
-	motorStop(1);
+	setMotor_(0, 0);
+	setMotor_(1, 0);
+}
+
+void ESP32MotorControl::motorsSet(int8_t speed0, int8_t speed1)
+{
+	setMotor_(0, speed0);
+	setMotor_(1, speed1);
 }
 
 uint8_t ESP32MotorControl::getMotorSpeed(uint8_t motor)
 {
-	if (!isMotorValid(motor))
+	if (!isMotorValid_(motor))
 		return false;
 
 	return mMotorSpeed[motor];
@@ -202,27 +164,35 @@ uint8_t ESP32MotorControl::getMotorSpeed(uint8_t motor)
 
 boolean ESP32MotorControl::isMotorForward(uint8_t motor)
 {
-	if (!isMotorValid(motor))
+	if (!isMotorValid_(motor) || isMotorStopped(motor))
 		return false;
 
-	if (isMotorStopped(motor))
-		return false;
-	else
-		return mMotorForward[motor];
+	return mMotorForward[motor];
 }
 
 boolean ESP32MotorControl::isMotorStopped(uint8_t motor)
 {
-	if (!isMotorValid(motor))
+	if (!isMotorValid_(motor))
 		return true;
 
 	return (mMotorSpeed[motor] == 0);
 }
 
-boolean ESP32MotorControl::isMotorValid(uint8_t motor)
+void ESP32MotorControl::setMotor_(uint8_t motor, int8_t speed)
+{
+	if (!isMotorValid_(motor) || speed > 100 || speed < -100)
+		return;
+
+	setMotorPWM(motor, speed);
+
+	mMotorSpeed[motor] = std::abs(speed);
+	mMotorForward[motor] = speed > 0;
+}
+
+boolean ESP32MotorControl::isMotorValid_(uint8_t motor)
 {
 	if (motor > 1)
 		return false;
 
-	return mMotorAttached[motor];
+	return mMotorAttached_[motor];
 }

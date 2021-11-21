@@ -53,6 +53,8 @@ public:
 	void motorStop(uint8_t motor);
 	// Stop both motors
 	void motorsStop();
+	// Set speed values of [-100 : 100] to both motors
+	void motorsSet(int8_t speed0, int8_t speed1);
 
 	uint8_t getMotorSpeed(uint8_t motor);
 	boolean isMotorForward(uint8_t motor);
@@ -60,10 +62,11 @@ public:
 
 private:
 	// Fields:
-	boolean mMotorAttached[2] = {false, false};
+	boolean mMotorAttached_[2] = {false, false};
 
 	// Methods:
-	boolean isMotorValid(uint8_t motor);
+	void setMotor_(uint8_t motor, int8_t speed);
+	boolean isMotorValid_(uint8_t motor);
 };
 
 #endif  // ESP32MotorControl_H
