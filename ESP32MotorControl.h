@@ -25,35 +25,34 @@
 
 #include "Arduino.h"
 
-//////// Defines
-
 #ifndef ESP32
 #error "this library is only for ESP32"
 #endif
 
-//////// Class
-
 class ESP32MotorControl {
 public:
-	// Fields
-
+	// Fields:
 	uint16_t mMotorSpeed[2] = {0, 0};
 	boolean mMotorForward[2] = {true, true};
 
 	// Methods:
 
-	void attachMotor(uint8_t gpioIn1, uint8_t gpioIn2);
-	void attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t gpioIn3, uint8_t gpioIn4);
+	// Attach one motor
+	void attachMotor(uint8_t gpioIn1, uint8_t gpioIn2, uint32_t frequencyHz = 1000);
+	// Attach two motors
+	void attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t gpioIn3, uint8_t gpioIn4,
+	                  uint32_t frequencyHz = 1000);
 
-	void motorFullForward(uint8_t motor);
+	// Set speed -> PWM duty in the range 0-100
 	void motorForward(uint8_t motor, uint8_t speed);
-	void motorFullReverse(uint8_t motor);
 	void motorReverse(uint8_t motor, uint8_t speed);
+	// Set full speed
+	void motorFullForward(uint8_t motor);
+	void motorFullReverse(uint8_t motor);
+	// Stop specific motor
 	void motorStop(uint8_t motor);
-
+	// Stop both motors
 	void motorsStop();
-
-	void handle();
 
 	uint8_t getMotorSpeed(uint8_t motor);
 	boolean isMotorForward(uint8_t motor);
@@ -61,11 +60,9 @@ public:
 
 private:
 	// Fields:
-
 	boolean mMotorAttached[2] = {false, false};
 
-	// Methods
-
+	// Methods:
 	boolean isMotorValid(uint8_t motor);
 };
 
