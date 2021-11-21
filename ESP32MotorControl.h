@@ -1,5 +1,7 @@
 /* Header for ESP32MotorControl
  *
+ * Copyright (C) 2021  Karol Pieniacy https://github.com/pieniacy/ESP32MotorControl
+ *
  * Copyright (C) 2018  Joao Lopes https://github.com/JoaoLopesF/ESP32MotorControl
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,17 +28,13 @@
 //////// Defines
 
 #ifndef ESP32
-	#error "this library is only for ESP32"
+#error "this library is only for ESP32"
 #endif
-
-#define PWM_FREQ 1000	// PWM Frequency		
 
 //////// Class
 
-class ESP32MotorControl
-{
+class ESP32MotorControl {
 public:
-
 	// Fields
 
 	uint16_t mMotorSpeed[2] = {0, 0};
@@ -62,7 +60,6 @@ public:
 	boolean isMotorStopped(uint8_t motor);
 
 private:
-
 	// Fields:
 
 	boolean mMotorAttached[2] = {false, false};
@@ -72,4 +69,4 @@ private:
 	boolean isMotorValid(uint8_t motor);
 };
 
-#endif // ESP32MotorControl_H
+#endif  // ESP32MotorControl_H
