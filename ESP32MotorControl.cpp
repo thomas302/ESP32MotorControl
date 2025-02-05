@@ -132,9 +132,9 @@ void ESP32MotorControl::attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t g
 	mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_1, &cfg);
 }
 
-void ESP32MotorControl::motorForward(uint8_t motor, uint8_t speed) { setMotor_(motor, speed); }
+void ESP32MotorControl::motorForward(uint8_t motor, double speed) { setMotor_(motor, speed); }
 
-void ESP32MotorControl::motorReverse(uint8_t motor, uint8_t speed) { setMotor_(motor, -speed); }
+void ESP32MotorControl::motorReverse(uint8_t motor, double speed) { setMotor_(motor, -speed); }
 
 void ESP32MotorControl::motorFullForward(uint8_t motor) { setMotor_(motor, 100); }
 
@@ -178,10 +178,8 @@ boolean ESP32MotorControl::isMotorStopped(uint8_t motor)
 	return (mMotorSpeed[motor] == 0);
 }
 
-void ESP32MotorControl::setMotor_(uint8_t motor, int8_t speed)
+void ESP32MotorControl::setMotor_(uint8_t motor, double speed)
 {
-	if (!isMotorValid_(motor) || speed > 100 || speed < -100)
-		return;
 
 	setMotorPWM(motor, speed);
 

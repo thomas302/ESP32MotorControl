@@ -43,9 +43,10 @@ public:
 	void attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t gpioIn3, uint8_t gpioIn4,
 	                  uint32_t frequencyHz = 1000);
 
+	void setMotor(uint8_t motor, double speed);
 	// Set speed -> PWM duty in the range 0-100
-	void motorForward(uint8_t motor, uint8_t speed);
-	void motorReverse(uint8_t motor, uint8_t speed);
+	void motorForward(uint8_t motor, double speed);
+	void motorReverse(uint8_t motor, double speed);
 	// Set full speed
 	void motorFullForward(uint8_t motor);
 	void motorFullReverse(uint8_t motor);
@@ -65,7 +66,7 @@ private:
 	boolean mMotorAttached_[2] = {false, false};
 
 	// Methods:
-	void setMotor_(uint8_t motor, int8_t speed);
+	void setMotor_(uint8_t motor, double speed);
 	boolean isMotorValid_(uint8_t motor);
 };
 
