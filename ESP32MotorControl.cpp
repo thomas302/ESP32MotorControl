@@ -73,7 +73,7 @@ void setMotorNoPWM(uint8_t motor, int8_t dir)
 
 void setMotorPWM(uint8_t motor, int8_t speed)
 {
-	if (speed == 0 || speed == -100 || speed == 100) {
+	if (speed == 0 || speed <= -100 || speed >= 100) {
 		setMotorNoPWM(motor, speed);
 		return;
 	}
