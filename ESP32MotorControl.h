@@ -55,7 +55,7 @@ public:
 	// Stop both motors
 	void motorsStop();
 	// Set speed values of [-100 : 100] to both motors
-	void motorsSet(int8_t speed0, int8_t speed1);
+	void motorsSet(double speed0, double speed1);
 
 	uint8_t getMotorSpeed(uint8_t motor);
 	boolean isMotorForward(uint8_t motor);

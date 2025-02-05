@@ -71,7 +71,7 @@ void setMotorNoPWM(uint8_t motor, int8_t dir)
 	}
 }
 
-void setMotorPWM(uint8_t motor, int8_t speed)
+void setMotorPWM(uint8_t motor, double speed)
 {
 	if (speed == 0 || speed <= -100 || speed >= 100) {
 		setMotorNoPWM(motor, speed);
@@ -148,7 +148,7 @@ void ESP32MotorControl::motorsStop()
 	setMotor_(1, 0);
 }
 
-void ESP32MotorControl::motorsSet(int8_t speed0, int8_t speed1)
+void ESP32MotorControl::motorsSet(double speed0, double speed1)
 {
 	setMotor_(0, speed0);
 	setMotor_(1, speed1);
