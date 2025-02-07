@@ -122,7 +122,7 @@ void ESP32MotorControl::attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t g
 
     mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_1, &pwm_config);    //Configure PWM1A & PWM1B with above settings
 
-	debug ("MCPWM initialized");
+	//debug ("MCPWM initialized");
 }
 
 // Motor full forward
@@ -149,7 +149,7 @@ void ESP32MotorControl::motorFullForward(uint8_t motor)
 	mMotorSpeed[motor] = 100; // Save it
 	mMotorForward[motor] = true;
 
-	debug ("Motor %u full forward", motor);
+	//debug ("Motor %u full forward", motor);
 }
 
 // Motor set speed forward
@@ -220,7 +220,7 @@ void ESP32MotorControl::motorFullReverse(uint8_t motor)
 	mMotorSpeed[motor] = 100; // Save it
 	mMotorForward[motor] = false;
 
-	debug ("Motor %u full reverse", motor);
+	//debug ("Motor %u full reverse", motor);
 }
 
 // Motor set speed reverse
@@ -256,7 +256,7 @@ void ESP32MotorControl::motorReverse(uint8_t motor, float speed)
 		mMotorSpeed[motor] = speed; // Save it
 		mMotorForward[motor] = false;
 
-		debug("Motor %u reverse speed %f", motor, speed);
+		//debug("Motor %u reverse speed %f", motor, speed);
 	}
 }
 
@@ -286,7 +286,7 @@ void ESP32MotorControl::motorStop(uint8_t motor)
 	mMotorSpeed[motor] = 0; // Save it
 	mMotorForward[motor] = true; // For stop
 
-	debug("Motor %u stop", motor);
+	//debug("Motor %u stop", motor);
 }
 
 // Motors stop
@@ -296,7 +296,7 @@ void ESP32MotorControl::motorsStop()
 	motorStop(0);
 	motorStop(1);
 
-	debug("Motors stop");
+	//debug("Motors stop");
 }
 
 // Get motor speed
