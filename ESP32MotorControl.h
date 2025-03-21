@@ -24,7 +24,6 @@
 #include "Arduino.h"
 
 //////// Defines
-
 #ifndef ESP32
 	#error "this library is only for ESP32"
 #endif
@@ -32,47 +31,40 @@
 #define PWM_FREQ 1000	// PWM Frequency		
 
 //////// Class
-
 class ESP32MotorControl
 {
-public:
+	public:
+		// Fields
+		uint16_t mMotorSpeed[2] = {0, 0};
+		boolean mMotorForward[2] = {true, true};
 
-	// Fields
+		// Methods:
+		void attachMotor(uint8_t gpioIn1, uint8_t gpioIn2);
+		void attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t gpioIn3, uint8_t gpioIn4);
 
-	uint16_t mMotorSpeed[2] = {0, 0};
-	boolean mMotorForward[2] = {true, true};
+		void motorForward(uint8_t motor, float speed);
+		void motorFullForward(uint8_t motor);
 
-	// Methods:
+		void motorFullReverse(uint8_t motor);
+		void motorReverse(uint8_t motor, float speed);
 
-	void attachMotor(uint8_t gpioIn1, uint8_t gpioIn2);
-	void attachMotors(uint8_t gpioIn1, uint8_t gpioIn2, uint8_t gpioIn3, uint8_t gpioIn4);
+		void setMotorSpeed(uint8_t motor, float speed);
+		void motorStop(uint8_t motor);
 
-	void motorForward(uint8_t motor, float speed);
-	void motorFullForward(uint8_t motor);
+		void motorsStop();
 
-    void motorFullReverse(uint8_t motor);
-    void motorReverse(uint8_t motor, float speed);
+		void handle();
 
-    void setMotorSpeed(uint8_t motor, float speed);
-	void motorStop(uint8_t motor);
+		uint8_t getMotorSpeed(uint8_t motor);
+		boolean isMotorForward(uint8_t motor);
+		boolean isMotorStopped(uint8_t motor);
 
-	void motorsStop();
+	private:
+		// Fields:
+		boolean mMotorAttached[2] = {false, false};
 
-	void handle();
-
-	uint8_t getMotorSpeed(uint8_t motor);
-	boolean isMotorForward(uint8_t motor);
-	boolean isMotorStopped(uint8_t motor);
-
-private:
-
-	// Fields:
-
-	boolean mMotorAttached[2] = {false, false};
-
-	// Methods
-
-	boolean isMotorValid(uint8_t motor);
+		// Methods
+		boolean isMotorValid(uint8_t motor);
 };
 
 #endif // ESP32MotorControl_H
